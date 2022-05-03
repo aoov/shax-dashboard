@@ -67,9 +67,10 @@ function Products() {
                     columns: [
                       { Header: "number", accessor: "number", width: "10%" },
                       { Header: "name", accessor: "name", width: "25%" },
-                      { Header: "manufacturer", accessor: "manufacturer", width: "25%" },
+                      { Header: "manufacturer", accessor: "manufacturer", width: "10%" },
                       { Header: "description", accessor: "description" },
                       { Header: "msrp", accessor: "msrp", width: "12%" },
+                      { Header: "inventory", accessor: "amount", width: "12%" },
                     ],
                     rows: productsList,
                   }}

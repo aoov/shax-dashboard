@@ -107,7 +107,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Products",
+    name: "Products List",
     key: "products",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/products",

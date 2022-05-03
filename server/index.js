@@ -57,9 +57,12 @@ app.post("/api/sign-in", (req, res) => {
 });
 
 app.get("/api/get/products", (req, res) => {
-  db.query("select * from products", (error, result) => {
-    res.send(result);
-  });
+  db.query(
+    "select products.number, products.description, products.name, products.msrp, products.manufacturer, inventory.amount from products left join inventory on products.number=inventory.number",
+    (error, result) => {
+      res.send(result);
+    }
+  );
 });
 
 app.listen(3001, () => {
