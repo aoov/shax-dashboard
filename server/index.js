@@ -60,6 +60,27 @@ app.get("/api/get/products", (req, res) => {
   db.query(
     "select products.number, products.description, products.name, products.msrp, products.manufacturer, inventory.amount from products left join inventory on products.number=inventory.number",
     (error, result) => {
+      console.log(result);
+      res.send(result);
+    }
+  );
+});
+
+app.get("/api/get/incomingInventory", (req, res) => {
+  db.query(
+    "select inventory_deliveries.id as id, inventory_deliveries.supplier as supplier, date_format(inventory_deliveries.datePlaced, '%m-%d-%y') as datePlaced, date_format(inventory_deliveries.dateIncoming, '%m-%d-%y') as dateIncoming, count(inventory_delivery_items.deliveryID) as numberOfItems from inventory_deliveries left join inventory_delivery_items on (inventory_deliveries.id=inventory_delivery_items.deliveryID);",
+    (error, result) => {
+      console.log(result);
+      res.send(result);
+    }
+  );
+});
+
+app.get("/api/get/test", (req, res) => {
+  db.query(
+    "select id, supplier, date_format(datePlaced, '%m-%d-%y') as datePlaced, date_format(dateIncoming, '%m-%d-%y') as dateIncoming from inventory_deliveries ",
+    (error, result) => {
+      console.log(result);
       res.send(result);
     }
   );

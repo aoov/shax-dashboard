@@ -25,16 +25,18 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import { useEffect, useState } from "react";
-import Axios from "axios";
 import DataTable from "examples/Tables/DataTable";
 
-function Products() {
+// Data
+import { useEffect, useState } from "react";
+import Axios from "axios";
+
+function IncomingInventory() {
   // eslint-disable-next-line no-unused-vars
   const [productsList, setProductsList] = useState([]);
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/api/get/products").then((response) => {
+    Axios.get("http://localhost:3001/api/get/IncomingInventory").then((response) => {
       setProductsList(response.data);
     });
   }, []);
@@ -57,19 +59,18 @@ function Products() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Products List
+                  Inventory Deliveries
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
                   table={{
                     columns: [
-                      { Header: "number", accessor: "number", width: "10%" },
-                      { Header: "name", accessor: "name", width: "25%" },
-                      { Header: "manufacturer", accessor: "manufacturer", width: "10%" },
-                      { Header: "description", accessor: "description" },
-                      { Header: "msrp", accessor: "msrp", width: "12%" },
-                      { Header: "inventory", accessor: "amount", width: "12%" },
+                      { Header: "id", accessor: "id", width: "10%" },
+                      { Header: "supplier", accessor: "supplier", width: "25%" },
+                      { Header: "placed", accessor: "datePlaced", width: "10%" },
+                      { Header: "incoming", accessor: "dateIncoming" },
+                      { Header: "items", accessor: "dateIncoming" },
                     ],
                     rows: productsList,
                   }}
@@ -86,4 +87,4 @@ function Products() {
   );
 }
 
-export default Products;
+export default IncomingInventory;

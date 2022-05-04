@@ -44,6 +44,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Products from "layouts/products";
+import IncomingInventory from "layouts/incomingInventory";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -112,6 +113,14 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/products",
     component: <Products />,
+  },
+  {
+    type: "collapse",
+    name: "Incoming Inventory",
+    key: "inventory",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/incomingInventory",
+    component: <IncomingInventory />,
   },
 ];
 
