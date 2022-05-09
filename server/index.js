@@ -68,9 +68,8 @@ app.get("/api/get/products", (req, res) => {
 
 app.get("/api/get/incomingInventory", (req, res) => {
   db.query(
-    "select inventory_deliveries.id as id, inventory_deliveries.supplier as supplier, date_format(inventory_deliveries.datePlaced, '%m-%d-%y') as datePlaced, date_format(inventory_deliveries.dateIncoming, '%m-%d-%y') as dateIncoming, count(inventory_delivery_items.deliveryID) as numberOfItems from inventory_deliveries left join inventory_delivery_items on (inventory_deliveries.id=inventory_delivery_items.deliveryID);",
+    "SELECT inventory_deliveries.id AS id, inventory_deliveries.supplier AS supplier, DATE_FORMAT(inventory_deliveries.datePlaced, '%m-%d-%y') AS datePlaced, DATE_FORMAT(inventory_deliveries.dateIncoming, '%m-%d-%y') AS dateIncoming, COUNT(inventory_delivery_items.deliveryID) AS numberOfItems, SUM(inventory_delivery_items.quantity) AS totalItems FROM inventory_deliveries LEFT JOIN inventory_delivery_items ON (inventory_deliveries.id = inventory_delivery_items.deliveryID);",
     (error, result) => {
-      console.log(result);
       res.send(result);
     }
   );
@@ -80,7 +79,6 @@ app.get("/api/get/test", (req, res) => {
   db.query(
     "select id, supplier, date_format(datePlaced, '%m-%d-%y') as datePlaced, date_format(dateIncoming, '%m-%d-%y') as dateIncoming from inventory_deliveries ",
     (error, result) => {
-      console.log(result);
       res.send(result);
     }
   );

@@ -30,10 +30,44 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import { useEffect, useState } from "react";
 import Axios from "axios";
+import Icon from "@mui/material/Icon";
+import { Menu } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import MDButton from "../../components/MDButton";
 
 function IncomingInventory() {
   // eslint-disable-next-line no-unused-vars
   const [productsList, setProductsList] = useState([]);
+  const [anchor, setAnchor] = useState(null);
+  const [selected, setSelected] = useState(-1);
+
+  // eslint-disable-next-line no-unused-vars
+  const openMenu = (event) => {
+    setAnchor(event.currentTarget);
+  };
+
+  const closeMenu = () => {
+    setAnchor(null);
+  };
+
+  const onMenuItemClick = (event, index) => {
+    console.log(anchor);
+    closeMenu();
+    setSelected(index);
+  };
+
+  const addButton = (array) => {
+    // eslint-disable-next-line array-callback-return
+    array.map((v) => {
+      // eslint-disable-next-line no-param-reassign
+      v.action = (
+        <MDButton variant="text" color="secondary" onClick={openMenu}>
+          <Icon>more_vert</Icon>&nbsp;
+        </MDButton>
+      );
+    });
+    return array;
+  };
 
   useEffect(() => {
     Axios.get("http://localhost:3001/api/get/IncomingInventory").then((response) => {
@@ -70,13 +104,31 @@ function IncomingInventory() {
                       { Header: "supplier", accessor: "supplier", width: "25%" },
                       { Header: "placed", accessor: "datePlaced", width: "10%" },
                       { Header: "incoming", accessor: "dateIncoming" },
-                      { Header: "items", accessor: "dateIncoming" },
+                      { Header: "different products", accessor: "numberOfItems" },
+                      { Header: "total items", accessor: "totalItems" },
+                      { Header: "action", accessor: "action" },
                     ],
-                    rows: productsList,
+                    rows: addButton(productsList),
                   }}
                   isSorted
                   canSearch
                 />
+                <Menu open={Boolean(anchor)} anchorEl={anchor} onClose={closeMenu} keepMounted>
+                  <MenuItem
+                    key={0}
+                    onClick={(event) => onMenuItemClick(event, 0)}
+                    selected={selected === 0}
+                  >
+                    Details
+                  </MenuItem>
+                  <MenuItem
+                    key={1}
+                    onClick={(event) => onMenuItemClick(event, 1)}
+                    selected={selected === 1}
+                  >
+                    Mark Completed
+                  </MenuItem>
+                </Menu>
               </MDBox>
             </Card>
           </Grid>
