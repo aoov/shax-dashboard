@@ -22,28 +22,38 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import { Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Axios from "axios";
 import { isAuthenticated } from "../../App";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
-  console.log(isAuthenticated());
   if (!isAuthenticated()) {
-    console.log("not authenticated, attempting redirect");
     return <Navigate to="/authentication/sign-in/" />;
   }
+  const [outstandingOrders, setOutstandingOrders] = useState("");
+  const [totalCustomers, setTotalCustomers] = useState("");
+  const [completedOrders, setCompletedOrders] = useState("");
+  const [totalProducts, setTotalProducts] = useState("");
+
+  useEffect(() => {
+    Axios.get("http://localhost:3001/api/get/outstandingOrders").then((response) => {
+      setOutstandingOrders(response.data[0].amount);
+    });
+    Axios.get("http://localhost:3001/api/get/totalCustomers").then((response) => {
+      setTotalCustomers(response.data[0].amount);
+    });
+    Axios.get("http://localhost:3001/api/get/completedCustomerOrdersCount").then((response) => {
+      setCompletedOrders(response.data[0].amount);
+    });
+    Axios.get("http://localhost:3001/api/get/totalProducts").then((response) => {
+      setTotalProducts(response.data[0].amount);
+    });
+  }, []);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -51,117 +61,56 @@ function Dashboard() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
-                percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
-                }}
+              <DefaultInfoCard
+                icon="local_shipping"
+                title="Outstanding Orders"
+                color="warning"
+                value={outstandingOrders}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+              <DefaultInfoCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
+                color="info"
+                title="Total Products"
+                value={totalProducts}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+              <DefaultInfoCard
+                icon="check"
                 color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
+                title="Completed Orders"
+                value={completedOrders}
               />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
+              <DefaultInfoCard
                 icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
+                color="primary"
+                title="Total Customers"
+                value={totalCustomers}
               />
             </MDBox>
           </Grid>
         </Grid>
         <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
+          <Grid container spacing={3} />
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={4} lg={8}>
               <OrdersOverview />
             </Grid>
           </Grid>
         </MDBox>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

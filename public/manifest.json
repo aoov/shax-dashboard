@@ -1,10 +1,10 @@
 {
-  "short_name": "Material Dashboard",
-  "name": "Material Dashboard 2 React",
+  "short_name": "SHAX Dashboard",
+  "name": "SHAX Dashboard",
   "icons": [
     {
-      "src": "favicon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "favicon-32x32",
+      "sizes": "32x32",
       "type": "image/png"
     }
   ],

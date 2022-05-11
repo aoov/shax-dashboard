@@ -20,6 +20,8 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -29,53 +31,27 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import { useEffect, useState } from "react";
 import Axios from "axios";
-import Icon from "@mui/material/Icon";
-import { Menu } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import MDButton from "../../components/MDButton";
 
-function IncomingInventory() {
+function CustomerOrders() {
   // eslint-disable-next-line no-unused-vars
   const [productsList, setProductsList] = useState([]);
-  const [anchor, setAnchor] = useState(null);
-  const [selected, setSelected] = useState(-1);
   const [completed, setCompleted] = useState([]);
-
-  // eslint-disable-next-line no-unused-vars
-  const openMenu = (event) => {
-    setAnchor(event.currentTarget);
-  };
-
-  const closeMenu = () => {
-    setAnchor(null);
-  };
-
-  const onMenuItemClick = (event, index) => {
-    closeMenu();
-    setSelected(index);
-  };
-
-  const addButton = (array) => {
-    // eslint-disable-next-line array-callback-return
-    array.map((v) => {
-      // eslint-disable-next-line no-param-reassign
-      v.action = (
-        <MDButton variant="text" color="secondary" onClick={openMenu}>
-          <Icon>more_vert</Icon>&nbsp;
-        </MDButton>
-      );
-    });
-    return array;
-  };
+  const [orderID, setOrderID] = useState("");
 
   useEffect(() => {
-    Axios.get("http://localhost:3001/api/get/IncomingInventory").then((response) => {
+    Axios.get("http://localhost:3001/api/get/customerOrders").then((response) => {
       setProductsList(response.data);
     });
-    Axios.get("http://localhost:3001/api/get/completedIncomingInventory").then((response) => {
+    Axios.get("http://localhost:3001/api/get/completedCustomerOrders").then((response) => {
       setCompleted(response.data);
     });
   }, []);
+
+  const markCompleted = () => {
+    Axios.post("http://localhost:3001/api/insert/markOrderCompleted", {
+      orderID,
+    });
+  };
 
   return (
     <DashboardLayout>
@@ -95,42 +71,24 @@ function IncomingInventory() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Uncompleted Inventory Deliveries
+                  Uncompleted Customer Orders
                 </MDTypography>
               </MDBox>
               <MDBox>
                 <DataTable
                   table={{
                     columns: [
-                      { Header: "id", accessor: "id", width: "10%" },
-                      { Header: "supplier", accessor: "supplier", width: "25%" },
+                      { Header: "id", accessor: "orderID", width: "10%" },
+                      { Header: "customer id", accessor: "customerID", width: "25%" },
                       { Header: "placed", accessor: "datePlaced", width: "10%" },
-                      { Header: "incoming", accessor: "dateIncoming" },
                       { Header: "different products", accessor: "numberOfItems" },
                       { Header: "total items", accessor: "totalItems" },
-                      { Header: "action", accessor: "action" },
                     ],
-                    rows: addButton(productsList),
+                    rows: productsList,
                   }}
                   isSorted
                   canSearch
                 />
-                <Menu open={Boolean(anchor)} anchorEl={anchor} onClose={closeMenu} keepMounted>
-                  <MenuItem
-                    key={0}
-                    onClick={(event) => onMenuItemClick(event, 0)}
-                    selected={selected === 0}
-                  >
-                    Details
-                  </MenuItem>
-                  <MenuItem
-                    key={1}
-                    onClick={(event) => onMenuItemClick(event, 1)}
-                    selected={selected === 1}
-                  >
-                    Mark Completed
-                  </MenuItem>
-                </Menu>
               </MDBox>
             </Card>
             <MDBox p={3} />
@@ -146,42 +104,62 @@ function IncomingInventory() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Completed Inventory Deliveries
+                  Completed Customer Orders
                 </MDTypography>
               </MDBox>
               <MDBox>
                 <DataTable
                   table={{
                     columns: [
-                      { Header: "id", accessor: "id", width: "10%" },
-                      { Header: "supplier", accessor: "supplier", width: "25%" },
+                      { Header: "id", accessor: "orderID", width: "10%" },
+                      { Header: "customer id", accessor: "customerID", width: "25%" },
                       { Header: "placed", accessor: "datePlaced", width: "10%" },
-                      { Header: "incoming", accessor: "dateIncoming" },
                       { Header: "different products", accessor: "numberOfItems" },
                       { Header: "total items", accessor: "totalItems" },
-                      { Header: "action", accessor: "action" },
                     ],
-                    rows: addButton(completed),
+                    rows: completed,
                   }}
                   isSorted
                   canSearch
                 />
-                <Menu open={Boolean(anchor)} anchorEl={anchor} onClose={closeMenu} keepMounted>
-                  <MenuItem
-                    key={0}
-                    onClick={(event) => onMenuItemClick(event, 0)}
-                    selected={selected === 0}
-                  >
-                    Details
-                  </MenuItem>
-                  <MenuItem
-                    key={1}
-                    onClick={(event) => onMenuItemClick(event, 1)}
-                    selected={selected === 1}
-                  >
-                    Mark Completed
-                  </MenuItem>
-                </Menu>
+              </MDBox>
+            </Card>
+            <MDBox p={3} />
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="secondary"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Add Delivery Items
+                </MDTypography>
+              </MDBox>
+              <MDBox p={4} pt={4} sx={{ width: "100%" }}>
+                <Grid container>
+                  <MDBox mb={3} sx={{ width: "55%" }}>
+                    <MDInput
+                      variant="outlined"
+                      label="Order ID"
+                      fullWidth
+                      onChange={(event) => setOrderID(event.target.value)}
+                    />
+                  </MDBox>
+                  <MDBox ml={3} mt={1 / 2} sx={{ width: "15%" }}>
+                    <MDButton sx={{ width: "100%" }} onClick={markCompleted}>
+                      Mark Completed
+                    </MDButton>
+                  </MDBox>
+                  <MDBox ml={1} mt={1 / 2} sx={{ width: "15%" }}>
+                    <MDButton sx={{ width: "100%" }}>Unmark Completed</MDButton>
+                  </MDBox>
+                  <MDBox mb={3} sx={{ width: "100%" }} />
+                </Grid>
               </MDBox>
             </Card>
           </Grid>
@@ -191,4 +169,4 @@ function IncomingInventory() {
   );
 }
 
-export default IncomingInventory;
+export default CustomerOrders;

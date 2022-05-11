@@ -53,7 +53,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-console": "off"
+    }
   },
   "browserslist": {
     "production": [

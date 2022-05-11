@@ -56,7 +56,7 @@ function setEmployeeEmail(e) {
 
 const submitRegister = () => {
   console.log(user, password, email);
-  Axios.post("http://localhost:3001/api/insert", { user, password, email });
+  Axios.post("http://localhost:3001/api/insert/account", { user, password, email });
 };
 
 function Cover() {

@@ -60,9 +60,6 @@ function Basic() {
           app.setAuthenticated(true);
           navigation("/dashboard");
         }
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
   return (
